@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<link rel="icon" type="image/jpeg" href="icon.JPG">
+<link rel="apple-touch-icon" href="icon.JPG">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>مَوْعِدي Pro — نظام إدارة المواعيد الذكي</title>
+
+<!-- FontAwesome Icons & Google Fonts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#f4f7fb;
+  --surface:#ffffff;
+  --surface-2:#eef2f7;
+  --text:#172033;
+  --muted:#718096;
+  --primary:#2563eb;
+  --primary-2:#1d4ed8;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --border:#e2e8f0;
+  --shadow:0 12px 35px rgba(15,23,42,.08);
+  --radius:22px;
+}
+
+body.dark{
+  --bg:#070d18;
+  --surface:#101827;
+  --surface-2:#182235;
+  --text:#e5edf8;
+  --muted:#8fa0b7;
+  --border:#253247;
+  --shadow:0 12px 35px rgba(0,0,0,.2);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:"Cairo",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button, input, textarea, select{
+  font-family:inherit;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.app{
+  min-height:100vh;
+  display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:280px;
+  background:#0f172a;
+  color:white;
+  position:fixed;
+  right:0;
+  top:0;
+  bottom:0;
+  padding:28px 18px;
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  transition: transform 0.3s ease;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 10px 30px;
+}
+
+.brand-icon{
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  background:linear-gradient(135deg,#3b82f6,#7c3aed);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  color:white;
+  box-shadow:0 8px 25px rgba(59,130,246,.3);
+}
+
+.brand h1{
+  font-size:20px;
+  font-weight:800;
+  line-height:1.2;
+}
+
+.brand span{
+  display:block;
+  color:#94a3b8;
+  font-size:11px;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 15px;
+  border-radius:14px;
+  background:transparent;
+  color:#cbd5e1;
+  font-size:14px;
+  text-align:right;
+  transition:.2s;
+}
+
+.nav button:hover{
+  background:rgba(255,255,255,.07);
+  color:white;
+}
+
+.nav button.active{
+  background:#2563eb;
+  color:white;
+  box-shadow:0 8px 20px rgba(37,99,235,.25);
+  font-weight:700;
+}
+
+.nav-icon{
+  width:22px;
+  text-align:center;
+  font-size:16px;
+}
+
+.sidebar-footer{
+  margin-top:auto;
+  color:#64748b;
+  font-size:11px;
+  text-align:center;
+}
+
+/* MAIN */
+.main{
+  margin-right:280px;
+  width:calc(100% - 280px);
+  min-height:100vh;
+  padding:25px;
+}
+
+.mobile-header{
+  display:none;
+}
+
+/* TOPBAR */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.page-title h2{
+  font-size:26px;
+  font-weight:800;
+}
+
+.page-title p{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.icon-btn{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--border);
+  font-size:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 15px rgba(15,23,42,.04);
+  transition:.2s;
+}
+
+.icon-btn:hover{
+  background:var(--surface-2);
+  transform:translateY(-1px);
+}
+
+.primary-btn{
+  background:var(--primary);
+  color:white;
+  border-radius:14px;
+  padding:12px 20px;
+  font-size:13px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transition:.2s;
+}
+
+.primary-btn:hover{
+  background:var(--primary-2);
+  transform:translateY(-1px);
+}
+
+.secondary-btn{
+  background:var(--surface-2);
+  color:var(--text);
+  border-radius:13px;
+  padding:11px 17px;
+  font-size:13px;
+  font-weight:700;
+  transition:.2s;
+}
+
+.secondary-btn:hover{
+  opacity:0.9;
+}
+
+.danger-btn{
+  background:#fee2e2;
+  color:#dc2626;
+  border-radius:13px;
+  padding:11px 17px;
+  font-size:13px;
+  font-weight:700;
+  transition:.2s;
+}
+
+.danger-btn:hover{
+  background:#fca5a5;
+}
+
+/* STATS GRID */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.stat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.stat-icon{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+
+.stat-icon.blue{background:#dbeafe;color:#2563eb}
+.stat-icon.green{background:#d1fae5;color:#059669}
+.stat-icon.orange{background:#fef3c7;color:#d97706}
+.stat-icon.red{background:#fee2e2;color:#dc2626}
+
+.stat-value{
+  font-size:26px;
+  font-weight:800;
+  margin-top:12px;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* COUNTDOWN CARD */
+.countdown-card{
+  background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#4f46e5);
+  color:white;
+  border-radius:26px;
+  padding:25px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 18px 45px rgba(37,99,235,.23);
+}
+
+.countdown-card:before{
+  content:"";
+  position:absolute;
+  width:240px;
+  height:240px;
+  border-radius:50%;
+  border:35px solid rgba(255,255,255,.06);
+  left:-80px;
+  top:-120px;
+}
+
+.countdown-card:after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:rgba(255,255,255,.04);
+  left:45%;
+  bottom:-120px;
+}
+
+.next-label{
+  position:relative;
+  z-index:2;
+  font-size:12px;
+  opacity:.8;
+}
+
+.next-title{
+  position:relative;
+  z-index:2;
+  font-size:24px;
+  font-weight:800;
+  margin:6px 0 18px;
+}
+
+.countdown{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.time-box{
+  min-width:76px;
+  text-align:center;
+  background:rgba(255,255,255,.13);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:16px;
+  padding:10px 8px;
+}
+
+.time-number{
+  font-size:25px;
+  font-weight:800;
+  line-height:1.2;
+}
+
+.time-label{
+  font-size:9px;
+  opacity:.7;
+}
+
+.countdown-separator{
+  font-size:24px;
+  font-weight:800;
+  opacity:.7;
+}
+
+.next-meta{
+  position:relative;
+  z-index:2;
+  margin-top:18px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  font-size:12px;
+  opacity:.9;
+}
+
+/* CONTENT GRID */
+.content-grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:20px;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:17px;
+}
+
+.card-title{
+  font-size:17px;
+  font-weight:800;
+}
+
+.card-link{
+  color:var(--primary);
+  background:none;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* EVENTS LIST */
+.events-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.event{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:12px;
+  border-radius:15px;
+  background:var(--surface-2);
+  transition:.2s;
+  border-right:4px solid var(--primary);
+}
+
+.event:hover{
+  transform:translateX(-2px);
+}
+
+.event-date{
+  min-width:52px;
+  height:52px;
+  border-radius:14px;
+  background:var(--surface);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--border);
+}
+
+.event-day{
+  font-size:18px;
+  font-weight:800;
+  line-height:1;
+}
+
+.event-month{
+  font-size:9px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.event-info{
+  flex:1;
+  min-width:0;
+}
+
+.event-title{
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.event-time{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.event-actions{
+  display:flex;
+  gap:5px;
+}
+
+.small-action{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  background:var(--surface);
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--border);
+  transition:.2s;
+}
+
+.small-action:hover{
+  color:var(--primary);
+  border-color:var(--primary);
+}
+
+.empty{
+  padding:35px 10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.empty-icon{
+  font-size:35px;
+  margin-bottom:8px;
+}
+
+/* MINI CALENDAR */
+.calendar-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:17px;
+}
+
+.calendar-title{
+  font-weight:800;
+  font-size:16px;
+}
+
+.calendar-nav{
+  display:flex;
+  gap:5px;
+}
+
+.calendar-nav button{
+  width:33px;
+  height:33px;
+  border-radius:10px;
+  background:var(--surface-2);
+  color:var(--text);
+}
+
+.calendar-weekdays, .calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+}
+
+.calendar-weekdays div{
+  text-align:center;
+  color:var(--muted);
+  font-size:10px;
+  padding:5px 0;
+  font-weight:700;
+}
+
+.calendar-day{
+  min-height:48px;
+  border-radius:11px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:12px;
+  position:relative;
+  transition:.2s;
+}
+
+.calendar-day:hover{
+  background:var(--surface-2);
+}
+
+.calendar-day.other{
+  color:#cbd5e1;
+  opacity:0.5;
+}
+
+.calendar-day.today{
+  background:#dbeafe;
+  color:#1d4ed8;
+  font-weight:800;
+}
+
+body.dark .calendar-day.today{
+  background:#172d52;
+  color:#60a5fa;
+}
+
+.calendar-day.selected{
+  background:var(--primary);
+  color:white;
+}
+
+.event-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--primary);
+  position:absolute;
+  bottom:5px;
+}
+
+.calendar-day.selected .event-dot{
+  background:white;
+}
+
+/* PAGE VIEWS */
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* BIG CALENDAR */
+.big-calendar{
+  margin-top:10px;
+}
+
+.big-calendar .calendar-day{
+  min-height:85px;
+  justify-content:flex-start;
+  padding:8px;
+  border:1px solid var(--border);
+  background:var(--surface);
+}
+
+.day-events{
+  margin-top:4px;
+  width:100%;
+}
+
+.day-event{
+  font-size:10px;
+  background:#dbeafe;
+  color:#1d4ed8;
+  border-radius:6px;
+  padding:3px 6px;
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+body.dark .day-event{
+  background:#172d52;
+  color:#60a5fa;
+}
+
+/* ALL EVENTS FILTER & TABLE */
+.filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.search-box{
+  position:relative;
+  flex:1;
+  min-width:210px;
+}
+
+.search-box input{
+  width:100%;
+  height:45px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  border-radius:14px;
+  padding:0 42px 0 14px;
+  outline:none;
+  color:var(--text);
+  font-size:12px;
+}
+
+.search-box i{
+  position:absolute;
+  right:14px;
+  top:15px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.filter-select{
+  height:45px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:0 14px;
+  background:var(--surface);
+  color:var(--text);
+  outline:none;
+  font-size:12px;
+}
+
+.events-table{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.event-row{
+  display:grid;
+  grid-template-columns:1fr 150px 130px 140px;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:var(--surface);
+  transition:.2s;
+}
+
+.event-row:hover{
+  border-color:var(--primary);
+}
+
+.event-row-title{
+  font-weight:800;
+  font-size:13px;
+}
+
+.event-row-sub{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.badge.blue{background:#dbeafe;color:#1d4ed8}
+.badge.green{background:#d1fae5;color:#047857}
+.badge.orange{background:#fef3c7;color:#b45309}
+.badge.gray{background:#e2e8f0;color:#475569}
+
+/* SETTINGS */
+.settings{
+  max-width:850px;
+}
+
+.setting{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:18px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.setting:last-child{
+  border-bottom:0;
+}
+
+.setting-info h4{
+  font-size:14px;
+}
+
+.setting-info p{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.toggle{
+  width:52px;
+  height:29px;
+  background:#cbd5e1;
+  border-radius:20px;
+  padding:3px;
+  transition:.2s;
+}
+
+.toggle span{
+  display:block;
+  width:23px;
+  height:23px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+}
+
+.toggle.on{
+  background:var(--primary);
+}
+
+.toggle.on span{
+  transform:translateX(-23px);
+}
+
+.setting-input{
+  border:1px solid var(--border);
+  border-radius:11px;
+  padding:9px 12px;
+  outline:none;
+  width:180px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:12px;
+}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.6);
+  backdrop-filter:blur(6px);
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.modal-overlay.open{
+  display:flex;
+}
+
+.modal{
+  background:var(--surface);
+  width:min(580px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:25px;
+  padding:24px;
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.modal-header h3{
+  font-size:19px;
+  font-weight:800;
+}
+
+.close{
+  width:36px;
+  height:36px;
+  border-radius:11px;
+  background:var(--surface-2);
+  color:var(--text);
+  font-size:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+.form-group label{
+  font-size:11px;
+  font-weight:700;
+  color:var(--muted);
+}
+
+.form-group input, .form-group textarea, .form-group select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 12px;
+  outline:none;
+  background:var(--surface);
+  color:var(--text);
+  font-size:12px;
+}
+
+.form-group textarea{
+  min-height:85px;
+  resize:vertical;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.input-with-action{
+  display:flex;
+  gap:8px;
+}
+
+.action-btn{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:var(--surface-2);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  transition:.2s;
+}
+
+.action-btn.recording{
+  background:#fee2e2;
+  color:#dc2626;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+}
+
+.reminders{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.reminder-option input{
+  display:none;
+}
+
+.reminder-option span{
+  display:block;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:11px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.reminder-option input:checked+span{
+  background:#dbeafe;
+  color:#1d4ed8;
+  border-color:#93c5fd;
+  font-weight:700;
+}
+
+body.dark .reminder-option input:checked+span{
+  background:#172d52;
+  color:#60a5fa;
+  border-color:#2563eb;
+}
+
+.modal-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:20px;
+}
+
+/* TOAST */
+.toast-container{
+  position:fixed;
+  left:20px;
+  bottom:20px;
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.toast{
+  min-width:270px;
+  max-width:360px;
+  background:#0f172a;
+  color:white;
+  padding:13px 16px;
+  border-radius:14px;
+  box-shadow:0 15px 40px rgba(0,0,0,.2);
+  animation:toastIn .3s ease;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.toast.success{border-right:4px solid var(--success)}
+.toast.error{border-right:4px solid var(--danger)}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ALERT MODAL */
+.alert-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.75);
+  backdrop-filter:blur(8px);
+  z-index:2000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.alert-overlay.open{
+  display:flex;
+  animation:alertFade .25s ease;
+}
+
+.alert-box{
+  width:min(440px,100%);
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:30px 24px;
+  text-align:center;
+  box-shadow:0 25px 80px rgba(0,0,0,.35);
+}
+
+.alert-icon{
+  width:78px;
+  height:78px;
+  margin:0 auto 18px;
+  border-radius:24px;
+  background:#dbeafe;
+  color:#2563eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:36px;
+}
+
+.alert-box h3{
+  font-size:22px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.alert-event-title{
+  color:var(--text);
+  font-size:19px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.alert-box p{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:12px;
+}
+
+.alert-close{
+  width:100%;
+  padding:13px;
+  border-radius:14px;
+  background:var(--primary);
+  color:white;
+  font-weight:800;
+  font-size:13px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .content-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:800px){
+  .sidebar{transform:translateX(100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-right:0;width:100%;padding:16px;padding-top:80px}
+  
+  .mobile-header{
+    display:flex;
+    position:fixed;
+    top:0;right:0;left:0;
+    height:64px;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    z-index:90;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 15px;
+  }
+  .mobile-brand{font-weight:800;font-size:17px}
+  .menu-btn{width:40px;height:40px;border-radius:12px;background:var(--surface-2);color:var(--text);font-size:18px}
+  .event-row{grid-template-columns:1fr auto}
+  .event-row > div:nth-child(2), .event-row > div:nth-child(3){display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><i class="fa-solid fa-clock"></i></div>
+      <div>
+        <h1>مَوْعِدي Pro</h1>
+        <span>إدارة المواعيد الذكية</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="active" data-page="dashboard">
+        <i class="fa-solid fa-house nav-icon"></i>
+        الرئيسية
+      </button>
+
+      <button data-page="calendar">
+        <i class="fa-solid fa-calendar-days nav-icon"></i>
+        التقويم
+      </button>
+
+      <button data-page="events">
+        <i class="fa-solid fa-list-check nav-icon"></i>
+        جميع المواعيد
+      </button>
+
+      <button data-page="settings">
+        <i class="fa-solid fa-gear nav-icon"></i>
+        الإعدادات
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      مَوْعِدي Pro &copy; 2026
+    </div>
+  </aside>
+
+  <!-- MOBILE HEADER -->
+  <header class="mobile-header">
+    <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
+    <div class="mobile-brand">⏰ مَوْعِدي</div>
+    <button class="menu-btn" id="mobileAdd"><i class="fa-solid fa-plus"></i></button>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <section class="page active" id="dashboard">
+
+      <div class="topbar">
+        <div class="page-title">
+          <h2 id="greeting">مرحبًا بك 👋</h2>
+          <p id="todayText"></p>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-btn" id="notificationBtn" title="اختبار التنبيهات"><i class="fa-solid fa-bell"></i></button>
+          <button class="primary-btn" id="addBtn">
+            <i class="fa-solid fa-plus"></i>
+            <span>إضافة موعد</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-top">
+            <div>
+              <div class="stat-value" id="todayCount">0</div>
+              <div class="stat-label">مواعيد اليوم</div>
+            </div>
+            <div class="stat-icon blue"><i class="fa-solid fa-calendar-day"></i></div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <div>
+              <div class="stat-value" id="upcomingCount">0</div>
+              <div class="stat-label">المواعيد القادمة</div>
+            </div>
+            <div class="stat-icon green"><i class="fa-solid fa-calendar-plus"></i></div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <div>
+              <div class="stat-value" id="weekCount">0</div>
+              <div class="stat-label">هذا الأسبوع</div>
+            </div>
+            <div class="stat-icon orange"><i class="fa-solid fa-chart-line"></i></div>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <div>
+              <div class="stat-value" id="completedCount">0</div>
+              <div class="stat-label">مواعيد منتهية</div>
+            </div>
+            <div class="stat-icon red"><i class="fa-solid fa-check"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COUNTDOWN CARD -->
+      <div class="countdown-card">
+        <div class="next-label">الموعد القادم</div>
+        <div class="next-title" id="nextTitle">لا توجد مواعيد قادمة</div>
+
+        <div class="countdown">
+          <div class="time-box">
+            <div class="time-number" id="cdDays">00</div>
+            <div class="time-label">يوم</div>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="time-box">
+            <div class="time-number" id="cdHours">00</div>
+            <div class="time-label">ساعة</div>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="time-box">
+            <div class="time-number" id="cdMinutes">00</div>
+            <div class="time-label">دقيقة</div>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="time-box">
+            <div class="time-number" id="cdSeconds">00</div>
+            <div class="time-label">ثانية</div>
+          </div>
+        </div>
+
+        <div class="next-meta">
+          <span id="nextDate">—</span>
+          <span id="nextTime">—</span>
+          <span id="nextLocation">—</span>
+        </div>
+      </div>
+
+      <!-- MAIN GRID -->
+      <div class="content-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">المواعيد القادمة</div>
+            <button class="card-link" data-page-link="events">عرض الكل</button>
+          </div>
+          <div class="events-list" id="upcomingList"></div>
+        </div>
+
+        <div class="card">
+          <div class="calendar-head">
+            <div class="calendar-title" id="miniCalendarTitle"></div>
+            <div class="calendar-nav">
+              <button id="miniPrev"><i class="fa-solid fa-chevron-right"></i></button>
+              <button id="miniNext"><i class="fa-solid fa-chevron-left"></i></button>
+            </div>
+          </div>
+
+          <div class="calendar-weekdays">
+            <div>أحد</div><div>اثن</div><div>ثلا</div><div>أرب</div><div>خمي</div><div>جمع</div><div>سبت</div>
+          </div>
+          <div class="calendar-grid" id="miniCalendar"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CALENDAR PAGE -->
+    <section class="page" id="calendar">
+      <div class="topbar">
+        <div class="page-title">
+          <h2>التقويم التفاعلي</h2>
+          <p>استعرض مواعيدك بوضوح حسب الأيام والأشهر</p>
+        </div>
+
+        <button class="primary-btn" id="calendarAdd">
+          <i class="fa-solid fa-plus"></i>
+          <span>إضافة موعد</span>
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="calendar-head">
+          <button class="secondary-btn" id="calendarToday">اليوم</button>
+          <div class="calendar-title" id="bigCalendarTitle"></div>
+          <div class="calendar-nav">
+            <button id="bigPrev"><i class="fa-solid fa-chevron-right"></i></button>
+            <button id="bigNext"><i class="fa-solid fa-chevron-left"></i></button>
+          </div>
+        </div>
+
+        <div class="big-calendar">
+          <div class="calendar-weekdays">
+            <div>الأحد</div><div>الاثنين</div><div>الثلاثاء</div><div>الأربعاء</div><div>الخميس</div><div>الجمعة</div><div>السبت</div>
+          </div>
+          <div class="calendar-grid" id="bigCalendar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL EVENTS PAGE -->
+    <section class="page" id="events">
+      <div class="topbar">
+        <div class="page-title">
+          <h2>جميع المواعيد</h2>
+          <p>البحث، التصفية، والتصدير المتقدم للمواعيد</p>
+        </div>
+
+        <div class="top-actions">
+          <button class="secondary-btn" id="exportIcsBtn" title="تصدير إلى Google/Apple Calendar"><i class="fa-solid fa-calendar-export ml-1"></i> تصدير ICS</button>
+          <button class="primary-btn" id="eventsAdd">
+            <i class="fa-solid fa-plus"></i>
+            <span>إضافة موعد</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="filters">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="searchInput" type="search" placeholder="ابحث عن موعد، مكان، أو ملاحظات...">
+          </div>
+
+          <select class="filter-select" id="statusFilter">
+            <option value="all">كل المواعيد</option>
+            <option value="upcoming">القادمة</option>
+            <option value="today">اليوم</option>
+            <option value="past">المنتهية</option>
+          </select>
+
+          <select class="filter-select" id="categoryFilter">
+            <option value="all">جميع التصنيفات</option>
+            <option value="sports">رياضة ورماية 🏹</option>
+            <option value="work">عمل ومشاريع 💼</option>
+            <option value="personal">شخصي 👤</option>
+            <option value="study">دراسة وتعليم 📚</option>
+            <option value="health">صحة ولياقة 🏋️‍♂️</option>
+            <option value="family">عائلي 🏠</option>
+          </select>
+        </div>
+
+        <div class="events-table" id="allEventsList"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS PAGE -->
+    <section class="page" id="settings">
+      <div class="topbar">
+        <div class="page-title">
+          <h2>الإعدادات والنسخ الاحتياطي</h2>
+          <p>تحكم كامل في التجربة والبيانات</p>
+        </div>
+      </div>
+
+      <div class="card settings">
+        <div class="setting">
+          <div class="setting-info">
+            <h4>الوضع الداكن (Dark Mode)</h4>
+            <p>مظهر مريح للعين في الأوقات المتأخرة</p>
+          </div>
+          <button class="toggle" id="darkToggle"><span></span></button>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h4>إشعارات النظام والصوت</h4>
+            <p>السماح بالتنبيهات الصوتية والمباشرة</p>
+          </div>
+          <button class="toggle" id="notificationsToggle"><span></span></button>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h4>اسم المستخدم</h4>
+            <p>الاسم الظاهر في الترحيب والواجهة</p>
+          </div>
+          <input class="setting-input" id="userName" placeholder="اكتب اسمك">
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h4>النسخ الاحتياطي والتصدير (JSON / CSV)</h4>
+            <p>حفظ نسخة من مواعيدك أو استعادتها</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="secondary-btn" id="exportBackupBtn"><i class="fa-solid fa-download ml-1"></i> تصدير JSON</button>
+            <label class="secondary-btn" style="cursor:pointer;"><i class="fa-solid fa-upload ml-1"></i> استيراد <input type="file" id="importBackupInput" accept=".json" style="display:none"></label>
+          </div>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h4>إعادة ضبط البيانات</h4>
+            <p>مسح جميع المواعيد المحفوظة نهائياً</p>
+          </div>
+          <button class="danger-btn" id="clearData">حذف كل البيانات</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">إضافة موعد جديد</h3>
+      <button class="close" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <form id="eventForm">
+      <input type="hidden" id="eventId">
+
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>عنوان الموعد *</label>
+          <div class="input-with-action">
+            <input id="eventTitle" required placeholder="مثال: تدريب الرماية 40m">
+            <button type="button" class="action-btn" id="voiceTitleBtn" title="إملاء صوتي للعنوان"><i class="fa-solid fa-microphone"></i></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>التصنيف</label>
+          <select id="eventCategory">
+            <option value="sports">رياضة ورماية 🏹</option>
+            <option value="work">عمل ومشاريع 💼</option>
+            <option value="personal">شخصي 👤</option>
+            <option value="study">دراسة وتعليم 📚</option>
+            <option value="health">صحة ولياقة 🏋️‍♂️</option>
+            <option value="family">عائلي 🏠</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>اللون المميز</label>
+          <input type="color" id="eventColor" value="#2563eb" style="height:44px; padding:2px; cursor:pointer;">
+        </div>
+
+        <div class="form-group">
+          <label>التاريخ *</label>
+          <input id="eventDate" type="date" required>
+        </div>
+
+        <div class="form-group">
+          <label>الوقت *</label>
+          <input id="eventTime" type="time" required>
+        </div>
+
+        <div class="form-group">
+          <label>المكان / الرابط</label>
+          <input id="eventLocation" placeholder="مثال: نادي الرماية / زوم">
+        </div>
+
+        <div class="form-group">
+          <label>التكرار</label>
+          <select id="eventRepeat">
+            <option value="none">لا يتكرر</option>
+            <option value="daily">يوميًا</option>
+            <option value="weekly">أسبوعيًا</option>
+            <option value="monthly">شهريًا</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label>توقيت التنبيه المسبق</label>
+          <div class="reminders">
+            <label class="reminder-option"><input type="radio" name="reminder" value="0"><span>عند الموعد</span></label>
+            <label class="reminder-option"><input type="radio" name="reminder" value="5"><span>قبل 5 دقائق</span></label>
+            <label class="reminder-option"><input type="radio" name="reminder" value="15" checked><span>قبل 15 دقيقة</span></label>
+            <label class="reminder-option"><input type="radio" name="reminder" value="30"><span>قبل 30 دقيقة</span></label>
+            <label class="reminder-option"><input type="radio" name="reminder" value="60"><span>قبل ساعة</span></label>
+            <label class="reminder-option"><input type="radio" name="reminder" value="1440"><span>قبل يوم</span></label>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>ملاحظات إضافية</label>
+          <textarea id="eventNotes" placeholder="أضف تفاصيل إضافية تريد تذكرها..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="secondary-btn" id="cancelModal">إلغاء</button>
+        <button type="submit" class="primary-btn">حفظ الموعد</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ALERT DIALOG -->
+<div class="alert-overlay" id="alertOverlay">
+  <div class="alert-box">
+    <div class="alert-icon"><i class="fa-solid fa-bell-ring"></i></div>
+    <h3 id="alertHeading">تنبيه الموعد</h3>
+    <div class="alert-event-title" id="alertEventTitle">حان موعدك</div>
+    <p id="alertMessage">لديك موعد يحتاج إلى انتباهك الآن.</p>
+    <div class="alert-event-meta" id="alertEventMeta" style="color:var(--muted); font-size:12px; margin-bottom:20px;"></div>
+    <button class="alert-close" id="alertClose">فهمت، إغلاق التنبيه</button>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+"use strict";
+
+const STORAGE_KEY = "maw3idi_events_v2";
+const SETTINGS_KEY = "maw3idi_settings_v2";
+const NOTIFIED_KEY = "maw3idi_notified_v2";
+
+let events = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || JSON.stringify({
+  dark: false,
+  notifications: true,
+  userName: "عمران"
+}));
+
+let calendarDate = new Date();
+let editingId = null;
+let notifiedEvents = JSON.parse(localStorage.getItem(NOTIFIED_KEY) || "{}");
+let audioContext = null;
+let alarmTimer = null;
+let alertQueue = [];
+
+const $ = id => document.getElementById(id);
+
+function saveEvents(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); }
+function saveSettings(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+function saveNotified(){ localStorage.setItem(NOTIFIED_KEY, JSON.stringify(notifiedEvents)); }
+
+function pad(n){ return String(n).padStart(2,"0"); }
+function dateKey(date){ return [date.getFullYear(), pad(date.getMonth()+1), pad(date.getDate())].join("-"); }
+function parseDateTime(event){ return new Date(`${event.date}T${event.time}`); }
+function isSameDay(a,b){ return dateKey(a) === dateKey(b); }
+
+function formatDate(date){
+  return new Intl.DateTimeFormat("ar-EG", { weekday:"long", year:"numeric", month:"long", day:"numeric" }).format(date);
+}
+
+function formatShortDate(date){
+  return new Intl.DateTimeFormat("ar-EG", { day:"numeric", month:"short" }).format(date);
+}
+
+function formatTime(time){
+  const [h,m] = time.split(":").map(Number);
+  const d = new Date(); d.setHours(h,m,0,0);
+  return new Intl.DateTimeFormat("ar-EG", { hour:"numeric", minute:"2-digit" }).format(d);
+}
+
+function escapeHTML(v){
+  return String(v || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function getEventStatus(event){
+  const time = parseDateTime(event);
+  const now = new Date();
+  if(time < now) return "past";
+  if(isSameDay(time, now)) return "today";
+  return "upcoming";
+}
+
+function sortedEvents(){
+  return [...events].sort((a,b)=>parseDateTime(a)-parseDateTime(b));
+}
+
+function futureEvents(){
+  const now = new Date();
+  return sortedEvents().filter(e=>parseDateTime(e)>now);
+}
+
+/* AUDIO SYNTHESIS */
+function initAudio(){
+  try{
+    if(!audioContext){
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if(AudioCtx) audioContext = new AudioCtx();
+    }
+    if(audioContext && audioContext.state === "suspended") audioContext.resume();
+  }catch(e){ console.warn(e); }
+}
+
+function playBeep(){
+  try{
+    initAudio();
+    if(!audioContext) return;
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(660, now + .18);
+    gain.gain.setValueAtTime(.0001, now);
+    gain.gain.exponentialRampToValueAtTime(.25, now + .02);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + .25);
+    osc.connect(gain); gain.connect(audioContext.destination);
+    osc.start(now); osc.stop(now + .28);
+  }catch(e){}
+}
+
+function playAlarmSound(){
+  initAudio();
+  let count = 0;
+  clearInterval(alarmTimer);
+  playBeep();
+  alarmTimer = setInterval(()=>{
+    count++;
+    if(count >= 6){ clearInterval(alarmTimer); alarmTimer = null; return; }
+    playBeep();
+  }, 450);
+}
+
+function stopAlarmSound(){ if(alarmTimer){ clearInterval(alarmTimer); alarmTimer = null; } }
+
+function vibrateDevice(){
+  try{ if("vibrate" in navigator) navigator.vibrate([300, 150, 300, 150, 500]); }catch(e){}
+}
+
+/* ALERTS & NOTIFICATIONS */
+function showInAppAlert(event){
+  alertQueue.push(event);
+  if(!$("alertOverlay").classList.contains("open")) showNextAlert();
+}
+
+function showNextAlert(){
+  if(!alertQueue.length) return;
+  const event = alertQueue.shift();
+  const isNow = Number(event.reminder) === 0;
+  $("alertHeading").textContent = isNow ? "⏰ حان موعدك الآن" : "🔔 اقترب موعدك";
+  $("alertEventTitle").textContent = event.title;
+  $("alertMessage").textContent = isNow ? "حان الآن موعدك المحدد في مَوْعِدي Pro." : `لديك موعد بعد ${formatReminder(event.reminder)}.`;
+  $("alertEventMeta").textContent = `${formatShortDate(parseDateTime(event))} · ${formatTime(event.time)} ${event.location ? '· 📍 ' + event.location : ''}`;
+  $("alertOverlay").classList.add("open");
+}
+
+function closeAlert(){
+  stopAlarmSound();
+  $("alertOverlay").classList.remove("open");
+  setTimeout(()=>{ if(alertQueue.length) showNextAlert(); }, 150);
+}
+
+function triggerReminder(event, key){
+  notifiedEvents[key] = true; saveNotified();
+  playAlarmSound(); vibrateDevice(); showInAppAlert(event);
+  toast(`🔔 ${event.title}`, "success");
+}
+
+/* INITIALIZATION */
+document.addEventListener("DOMContentLoaded", ()=>{
+  applySettings();
+  setDefaultDate();
+  bindNavigation();
+  bindButtons();
+  bindVoiceInput();
+  renderEverything();
+
+  const activateAudio = ()=>{ initAudio(); document.removeEventListener("click", activateAudio); };
+  document.addEventListener("click", activateAudio, {once:true});
+
+  setInterval(()=>{ updateCountdown(); checkReminders(); updateStats(); }, 1000);
+});
+
+function applySettings(){
+  document.body.classList.toggle("dark", settings.dark);
+  $("darkToggle").classList.toggle("on", settings.dark);
+  $("notificationsToggle").classList.toggle("on", settings.notifications);
+  $("userName").value = settings.userName || "";
+  updateGreeting();
+}
+
+function updateGreeting(){
+  const hour = new Date().getHours();
+  let greeting = hour >= 5 && hour < 12 ? "صباح الخير" : "مساء الخير";
+  $("greeting").textContent = `${greeting}، ${settings.userName || "عمران"} 👋`;
+  $("todayText").textContent = formatDate(new Date());
+}
+
+function bindNavigation(){
+  document.querySelectorAll("[data-page]").forEach(b=>{
+    b.addEventListener("click", ()=>{ showPage(b.dataset.page); $("sidebar").classList.remove("open"); });
+  });
+  document.querySelectorAll("[data-page-link]").forEach(b=>{
+    b.addEventListener("click", ()=>{ showPage(b.dataset.pageLink); });
+  });
+}
+
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const target = $(page); if(target) target.classList.add("active");
+  document.querySelectorAll(".nav button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.page === page);
+  });
+  if(page === "calendar") renderBigCalendar();
+  if(page === "events") renderAllEvents();
+}
+
+function bindButtons(){
+  $("addBtn").onclick = () => openModal();
+  $("calendarAdd").onclick = () => openModal();
+  $("eventsAdd").onclick = () => openModal();
+  $("mobileAdd").onclick = () => openModal();
+  $("closeModal").onclick = closeModal;
+  $("cancelModal").onclick = closeModal;
+  $("alertClose").onclick = closeAlert;
+
+  $("eventForm").onsubmit = saveEvent;
+
+  $("miniPrev").onclick = () => { calendarDate.setMonth(calendarDate.getMonth()-1); renderMiniCalendar(); };
+  $("miniNext").onclick = () => { calendarDate.setMonth(calendarDate.getMonth()+1); renderMiniCalendar(); };
+  $("bigPrev").onclick = () => { calendarDate.setMonth(calendarDate.getMonth()-1); renderBigCalendar(); };
+  $("bigNext").onclick = () => { calendarDate.setMonth(calendarDate.getMonth()+1); renderBigCalendar(); };
+  $("calendarToday").onclick = () => { calendarDate = new Date(); renderBigCalendar(); };
+
+  $("searchInput").oninput = renderAllEvents;
+  $("statusFilter").onchange = renderAllEvents;
+  $("categoryFilter").onchange = renderAllEvents;
+
+  $("darkToggle").onclick = () => { settings.dark = !settings.dark; saveSettings(); applySettings(); };
+  $("notificationsToggle").onclick = () => { settings.notifications = !settings.notifications; saveSettings(); applySettings(); };
+  $("userName").onchange = (e) => { settings.userName = e.target.value.trim() || "عمران"; saveSettings(); updateGreeting(); toast("تم حفظ الاسم", "success"); };
+  $("menuBtn").onclick = () => $("sidebar").classList.toggle("open");
+
+  $("exportBackupBtn").onclick = exportJSONBackup;
+  $("importBackupInput").onchange = importJSONBackup;
+  $("exportIcsBtn").onclick = exportICS;
+  $("clearData").onclick = () => {
+    if(confirm("هل أنت متأكد من حذف جميع المواعيد؟")){
+      events = []; notifiedEvents = {}; saveEvents(); saveNotified(); renderEverything(); toast("تم مسح البيانات", "success");
+    }
+  };
+}
+
+/* VOICE INPUT SPEECH TO TEXT */
+function bindVoiceInput(){
+  const voiceBtn = $("voiceTitleBtn");
+  if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ar-SA';
+    recognition.onstart = () => voiceBtn.classList.add("recording");
+    recognition.onend = () => voiceBtn.classList.remove("recording");
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      $("eventTitle").value = transcript;
+      toast("تم التقاط الصوت بنجاح", "success");
+    };
+    voiceBtn.onclick = () => recognition.start();
+  } else {
+    voiceBtn.style.display = 'none';
+  }
+}
+
+function setDefaultDate(){
+  const now = new Date();
+  $("eventDate").value = dateKey(now);
+  const future = new Date(now.getTime()+15*60000);
+  $("eventTime").value = `${pad(future.getHours())}:${pad(future.getMinutes())}`;
+}
+
+function openModal(event = null){
+  initAudio();
+  $("modalOverlay").classList.add("open");
+  if(event){
+    editingId = event.id;
+    $("modalTitle").textContent = "تعديل الموعد";
+    $("eventId").value = event.id;
+    $("eventTitle").value = event.title;
+    $("eventCategory").value = event.category || "personal";
+    $("eventColor").value = event.color || "#2563eb";
+    $("eventDate").value = event.date;
+    $("eventTime").value = event.time;
+    $("eventLocation").value = event.location || "";
+    $("eventRepeat").value = event.repeat || "none";
+    $("eventNotes").value = event.notes || "";
+  } else {
+    editingId = null;
+    $("modalTitle").textContent = "إضافة موعد جديد";
+    $("eventForm").reset();
+    setDefaultDate();
+  }
+}
+
+function closeModal(){ $("modalOverlay").classList.remove("open"); editingId = null; }
+
+function saveEvent(e){
+  e.preventDefault();
+  const title = $("eventTitle").value.trim();
+  if(!title) return;
+
+  const data = {
+    id: editingId || 'ev_' + Date.now(),
+    title,
+    category: $("eventCategory").value,
+    color: $("eventColor").value,
+    date: $("eventDate").value,
+    time: $("eventTime").value,
+    location: $("eventLocation").value.trim(),
+    repeat: $("eventRepeat").value,
+    reminder: Number(document.querySelector('input[name="reminder"]:checked')?.value || 15),
+    notes: $("eventNotes").value.trim()
+  };
+
+  if(editingId){
+    const index = events.findIndex(e=>e.id===editingId);
+    if(index !== -1) events[index] = data;
+    toast("تم تحديث الموعد", "success");
+  } else {
+    events.push(data);
+    toast("تم إضافة الموعد بنجاح", "success");
+  }
+
+  saveEvents(); closeModal(); renderEverything();
+}
+
+function renderEverything(){
+  updateGreeting(); updateStats(); renderUpcoming(); renderMiniCalendar(); renderBigCalendar(); renderAllEvents(); updateCountdown();
+}
+
+function updateStats(){
+  const now = new Date();
+  $("todayCount").textContent = events.filter(e=>e.date===dateKey(now)).length;
+  $("upcomingCount").textContent = events.filter(e=>parseDateTime(e)>now).length;
+  const weekEnd = new Date(now); weekEnd.setDate(now.getDate()+7);
+  $("weekCount").textContent = events.filter(e=>{ const d = parseDateTime(e); return d>=now && d<=weekEnd; }).length;
+  $("completedCount").textContent = events.filter(e=>parseDateTime(e)<now).length;
+}
+
+function renderUpcoming(){
+  const list = $("upcomingList");
+  const items = futureEvents().slice(0,6);
+  if(!items.length){
+    list.innerHTML = `<div class="empty"><div class="empty-icon">📅</div>لا توجد مواعيد قادمة</div>`;
+    return;
+  }
+  list.innerHTML = items.map(e => {
+    const d = parseDateTime(e);
+    return `
+      <div class="event" style="border-right-color: ${e.color || '#2563eb'}">
+        <div class="event-date">
+          <div class="event-day">${d.getDate()}</div>
+          <div class="event-month">${new Intl.DateTimeFormat("ar-EG",{month:"short"}).format(d)}</div>
+        </div>
+        <div class="event-info">
+          <div class="event-title">${escapeHTML(e.title)}</div>
+          <div class="event-time">${formatTime(e.time)} ${e.location ? '· ' + escapeHTML(e.location) : ''}</div>
+        </div>
+        <div class="event-actions">
+          <button class="small-action" onclick="editEvent('${e.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="small-action" onclick="deleteEvent('${e.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function updateCountdown(){
+  const next = futureEvents()[0];
+  if(!next){
+    $("nextTitle").textContent = "لا توجد مواعيد قادمة";
+    $("cdDays").textContent = "00"; $("cdHours").textContent = "00";
+    $("cdMinutes").textContent = "00"; $("cdSeconds").textContent = "00";
+    $("nextDate").textContent = "—"; $("nextTime").textContent = "—"; $("nextLocation").textContent = "—";
+    return;
+  }
+  const diff = Math.max(0, parseDateTime(next) - new Date());
+  const secs = Math.floor(diff/1000);
+  $("nextTitle").textContent = next.title;
+  $("cdDays").textContent = pad(Math.floor(secs/86400));
+  $("cdHours").textContent = pad(Math.floor((secs%86400)/3600));
+  $("cdMinutes").textContent = pad(Math.floor((secs%3600)/60));
+  $("cdSeconds").textContent = pad(secs%60);
+  $("nextDate").textContent = formatShortDate(parseDateTime(next));
+  $("nextTime").textContent = `🕐 ${formatTime(next.time)}`;
+  $("nextLocation").textContent = next.location ? `📍 ${next.location}` : "";
+}
+
+function renderMiniCalendar(){
+  const year = calendarDate.getFullYear(), month = calendarDate.getMonth();
+  $("miniCalendarTitle").textContent = new Intl.DateTimeFormat("ar-EG",{month:"long",year:"numeric"}).format(calendarDate);
+  const first = new Date(year, month, 1), last = new Date(year, month+1, 0);
+  let html = "";
+  for(let i=0; i<first.getDay(); i++) html += `<div class="calendar-day other"></div>`;
+  for(let day=1; day<=last.getDate(); day++){
+    const d = new Date(year, month, day);
+    const hasEv = events.some(e=>e.date===dateKey(d));
+    html += `<div class="calendar-day ${isSameDay(d, new Date())?'today':''}" onclick="selectCalendarDate('${dateKey(d)}')">${day}${hasEv?'<span class="event-dot"></span>':''}</div>`;
+  }
+  $("miniCalendar").innerHTML = html;
+}
+
+function renderBigCalendar(){
+  const year = calendarDate.getFullYear(), month = calendarDate.getMonth();
+  $("bigCalendarTitle").textContent = new Intl.DateTimeFormat("ar-EG",{month:"long",year:"numeric"}).format(calendarDate);
+  const first = new Date(year, month, 1), last = new Date(year, month+1, 0);
+  let html = "";
+  for(let i=0; i<first.getDay(); i++) html += `<div class="calendar-day other"></div>`;
+  for(let day=1; day<=last.getDate(); day++){
+    const d = new Date(year, month, day); const key = dateKey(d);
+    const dayEv = events.filter(e=>e.date===key);
+    html += `
+      <div class="calendar-day ${isSameDay(d, new Date())?'today':''}" onclick="selectCalendarDate('${key}')">
+        <strong>${day}</strong>
+        <div class="day-events">
+          ${dayEv.slice(0,2).map(e=>`<div class="day-event" style="background:${e.color||'#2563eb'}; color:white">${escapeHTML(e.title)}</div>`).join("")}
+          ${dayEv.length > 2 ? `<div class="day-event">+${dayEv.length-2} أخرى</div>` : ''}
+        </div>
+      </div>`;
+  }
+  $("bigCalendar").innerHTML = html;
+}
+
+function selectCalendarDate(date){
+  $("eventDate").value = date; showPage("calendar");
+  const dayEv = events.filter(e=>e.date===date);
+  if(dayEv.length) toast(`مواعيد اليوم: ${dayEv.map(e=>e.title).join("، ")}`, "success");
+  else toast("لا توجد مواعيد بهذا اليوم");
+}
+
+function renderAllEvents(){
+  const list = $("allEventsList"); if(!list) return;
+  const search = ($("searchInput")?.value || "").toLowerCase();
+  const filter = $("statusFilter")?.value || "all";
+  const catFilter = $("categoryFilter")?.value || "all";
+
+  let filtered = sortedEvents().filter(e=>{
+    let matchS = filter === "all" || getEventStatus(e) === filter;
+    let matchC = catFilter === "all" || e.category === catFilter;
+    let matchText = !search || e.title.toLowerCase().includes(search) || (e.location||"").toLowerCase().includes(search);
+    return matchS && matchC && matchText;
+  });
+
+  if(!filtered.length){
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🔎</div>لا توجد مواعيد مطابقة</div>`; return;
+  }
+
+  list.innerHTML = filtered.map(e=>{
+    const d = parseDateTime(e);
+    return `
+      <div class="event-row" style="border-right:4px solid ${e.color||'#2563eb'}">
+        <div>
+          <div class="event-row-title">${escapeHTML(e.title)}</div>
+          <div class="event-row-sub">${e.location ? '📍 ' + escapeHTML(e.location) : ''}</div>
+        </div>
+        <div><div class="event-row-title">${formatShortDate(d)}</div></div>
+        <div><div class="event-row-title">${formatTime(e.time)}</div></div>
+        <div style="display:flex; gap:5px; justify-content:flex-end">
+          <button class="small-action" onclick="editEvent('${e.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="small-action" onclick="deleteEvent('${e.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function formatReminder(m){ return m < 60 ? `${m} دقيقة` : `${m/60} ساعة`; }
+
+function editEvent(id){ const e = events.find(x=>x.id===id); if(e) openModal(e); }
+function deleteEvent(id){
+  if(confirm("حذف هذا الموعد؟")){
+    events = events.filter(x=>x.id!==id); saveEvents(); renderEverything(); toast("تم الحذف بنجاح", "success");
+  }
+}
+
+function checkReminders(){
+  if(!settings.notifications) return;
+  const now = new Date();
+  events.forEach(e=>{
+    const target = parseDateTime(e);
+    const remTime = new Date(target.getTime() - Number(e.reminder||0)*60000);
+    const diff = now.getTime() - remTime.getTime();
+    const key = `${e.id}_${e.date}_${e.time}`;
+    if(diff >= 0 && diff < 60000 && !notifiedEvents[key]){
+      triggerReminder(e, key);
+    }
+  });
+}
+
+function exportJSONBackup(){
+  const blob = new Blob([JSON.stringify(events, null, 2)], {type: "application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `Maw3idi_Backup_${dateKey(new Date())}.json`; a.click();
+  toast("تم تصدير النسخة الاحتياطية بنجاح", "success");
+}
+
+function importJSONBackup(evt){
+  const file = evt.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try{
+      events = JSON.parse(e.target.result); saveEvents(); renderEverything(); toast("تم استعادة المواعيد بنجاح", "success");
+    }catch(err){ toast("ملف غير صالح", "error"); }
+  };
+  reader.readAsText(file);
+}
+
+function exportICS(){
+  let ics = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Maw3idi Pro//AR\n";
+  events.forEach(e=>{
+    const d = e.date.replace(/-/g, ""); const t = e.time.replace(/:/g, "") + "00";
+    ics += `BEGIN:VEVENT\nSUMMARY:${e.title}\nDTSTART:${d}T${t}\nLOCATION:${e.location||""}\nDESCRIPTION:${e.notes||""}\nEND:VEVENT\n`;
+  });
+  ics += "END:VCALENDAR";
+  const blob = new Blob([ics], {type: "text/calendar"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `Maw3idi_Events_${dateKey(new Date())}.ics`; a.click();
+  toast("تم تصدير التقويم بصيغة ICS", "success");
+}
+
+function toast(msg, type=""){
+  const c = $("toastContainer"); const el = document.createElement("div");
+  el.className = `toast ${type}`; el.innerHTML = `<span>${msg}</span>`;
+  c.appendChild(el);
+  setTimeout(()=>{ el.style.opacity = "0"; setTimeout(()=>el.remove(), 250); }, 3000);
+}
+
+window.editEvent = editEvent; window.deleteEvent = deleteEvent; window.selectCalendarDate = selectCalendarDate;
+</script>
+</body>
+</html>
